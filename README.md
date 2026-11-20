@@ -156,7 +156,7 @@ For full mathematical proofs, see [docs/complexity_analysis.md](docs/complexity_
 
 Each implementation adheres to the identical algorithmic logic, input/output contract, and validation checks:
 
-* [C (solution.c)](C/solution.c) — Pure C99/C11, explicit `malloc` and `free_tree` recursion.
+* [C (tree.h, tree.c, reconstruction.c, solution.c)](C/) — Modular C99/C11 with an opaque Tree ADT.
 * [C++ (solution.cpp)](C++/solution.cpp) — Modern C++17 with `std::unique_ptr<Node>` for RAII safety.
 * [Java (Main.java)](Java/Main.java) — Clean Java 8+ implementation with error handling and static helpers.
 * [Python (solution.py)](Python/solution.py) — Clean, idiomatic Python 3 reference implementation.
@@ -171,7 +171,7 @@ All solutions accept a line-oriented standard input format:
 
 ### C
 ```bash
-clang -O2 -Wall -Wextra C/solution.c -o C/solution
+clang -O2 -Wall -Wextra C/tree.c C/reconstruction.c C/solution.c -o C/solution
 ./C/solution << 'EOF'
 A B D E C F G
 D E B F G C A
@@ -253,7 +253,12 @@ binary-tree-construction/
 ├── .gitignore                                        # Build artifacts and cache ignores
 │
 ├── C/
-│   └── solution.c                                    # C99 implementation
+│   ├── tree.h                                        # Public Tree ADT interface
+│   ├── tree.c                                        # Node representation & memory management
+│   ├── reconstruction.h                              # Reconstruction interface
+│   ├── reconstruction.c                              # Subtree partitioning algorithm
+│   ├── solution.c                                    # CLI entry point & I/O driver
+│   └── README.md                                     # Module overview & compilation
 │
 ├── C++/
 │   └── solution.cpp                                  # C++17 implementation

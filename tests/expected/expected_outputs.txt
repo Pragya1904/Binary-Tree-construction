@@ -57,3 +57,7 @@ STATUS: ERROR
 
 === TEST test_14_inconsistent_traversal ===
 STATUS: ERROR
+
+=== TEST test_15_inconsistent_subtree_roots ===
+STATUS: ERROR
+

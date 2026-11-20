@@ -81,7 +81,8 @@ def setup_compilers():
             break
 
     if c_compiler:
-        cmd = [c_compiler, "-O2", "-Wall", "-Wextra", str(C_SRC), "-o", str(C_BIN)]
+        c_sources = [str(ROOT_DIR / "C" / f) for f in ["tree.c", "reconstruction.c", "solution.c"]]
+        cmd = [c_compiler, "-O2", "-Wall", "-Wextra", *c_sources, "-o", str(C_BIN)]
         res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if res.returncode == 0 and C_BIN.exists():
             targets["C"] = {"cmd": [str(C_BIN)], "status": "READY"}

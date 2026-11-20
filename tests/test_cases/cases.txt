@@ -52,3 +52,8 @@ D E A
 === TEST test_14_inconsistent_traversal ===
 A B C
 A B C
+
+=== TEST test_15_inconsistent_subtree_roots ===
+A B C D E
+B C E D A
+
