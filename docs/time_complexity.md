@@ -1,6 +1,6 @@
 # Time and Space Complexity Analysis
 
-This document provides the definitive mathematical analysis of the time and space complexity for reconstructing a binary tree from its traversal sequences, as presented in the [DevDictates](https://youtube.com) educational series.
+This document provides the definitive mathematical analysis of the time and space complexity for reconstructing a binary tree from its traversal sequences, as presented in the DevDictates educational series.
 
 ---
 
