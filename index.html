@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevDictates | Binary Tree Reconstruction Visualizer</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #182234;
+            --accent-blue: #38bdf8;
+            --accent-emerald: #10b981;
+            --accent-purple: #c084fc;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            max-width: 720px;
+            margin: 0 auto 1.5rem auto;
+            font-size: 1.05rem;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #7dd3fc;
+            text-decoration: underline;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 1.4rem;
+            background: var(--accent-blue);
+            border-radius: 2px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Controls & Form */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 850px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1.25rem;
+            align-items: center;
+        }
+
+        button {
+            background-color: var(--bg-secondary);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.65rem 1.25rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background-color: #27354a;
+            border-color: var(--accent-blue);
+        }
+
+        button.primary {
+            background-color: var(--accent-blue);
+            color: #0f172a;
+            border: none;
+        }
+
+        button.primary:hover {
+            background-color: #7dd3fc;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Visualizer Panel */
+        .vis-container {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 950px) {
+            .vis-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .canvas-box {
+            background: #090d16;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .canvas-header {
+            padding: 0.75rem 1rem;
+            background: rgba(30, 41, 59, 0.5);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        #tree-svg {
+            width: 100%;
+            height: 380px;
+        }
+
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .info-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.1rem;
+        }
+
+        .info-card h4 {
+            font-size: 0.95rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .array-view {
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .array-cell {
+            padding: 0.35rem 0.65rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .array-cell.active-range {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: var(--accent-blue);
+            color: #ffffff;
+        }
+
+        .array-cell.root-cell {
+            background: rgba(245, 158, 11, 0.25);
+            border-color: var(--accent-amber);
+            color: #fbbf24;
+        }
+
+        .array-cell.left-root-cell {
+            background: rgba(192, 132, 252, 0.25);
+            border-color: var(--accent-purple);
+            color: #e9d5ff;
+        }
+
+        .array-cell.match-cell {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: var(--accent-emerald);
+            color: #6ee7b7;
+        }
+
+        .log-box {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            max-height: 180px;
+            overflow-y: auto;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .log-line {
+            margin-bottom: 0.3rem;
+        }
+        .log-line.highlight {
+            color: var(--accent-amber);
+            font-weight: bold;
+        }
+        .log-line.success {
+            color: var(--accent-emerald);
+        }
+
+        /* Theory Cards */
+        .theory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .math-block {
+            background: #090d16;
+            border-left: 3px solid var(--accent-blue);
+            padding: 0.75rem 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #38bdf8;
+            margin: 0.75rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--bg-secondary);
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Ambiguity Demo */
+        .ambiguity-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .ambiguity-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ambiguity-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .ambiguity-svg {
+            width: 100%;
+            height: 140px;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <span class="badge">DevDictates • Algorithms Visualized</span>
+        <h1>Binary Tree Reconstruction Visualizer</h1>
+        <p class="subtitle">
+            Explore step-by-step subtree partitioning, recursive boundary tracking, and the mathematical justification for the \(\mathcal{O}(n^2)\) time complexity.
+        </p>
+        <div class="nav-links">
+            <a href="#visualizer">Interactive Visualizer</a>
+            <a href="#complexity">Complexity Breakdown</a>
+            <a href="#ambiguity">Structural Ambiguity</a>
+            <a href="#multi-lang">Multi-Language Code</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Interactive Visualizer Section -->
+        <section id="visualizer">
+            <h2 class="section-title">Step-by-Step Reconstruction Visualizer</h2>
+
+            <div class="card">
+                <div class="grid-2">
+                    <div>
+                        <label for="pre-input">Preorder Traversal (Root &rarr; Left &rarr; Right)</label>
+                        <input type="text" id="pre-input" value="A B D E C F G" placeholder="Space separated values (e.g. A B D E C F G)">
+                    </div>
+                    <div>
+                        <label for="post-input">Postorder Traversal (Left &rarr; Right &rarr; Root)</label>
+                        <input type="text" id="post-input" value="D E B F G C A" placeholder="Space separated values (e.g. D E B F G C A)">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="primary" id="btn-build">Initialize Tree</button>
+                    <button id="btn-step" disabled>&rarr; Step Forward</button>
+                    <button id="btn-play" disabled>&blacktriangleright; Auto Play</button>
+                    <button id="btn-reset">Reset</button>
+
+                    <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 1rem;">Presets:</span>
+                    <button id="preset-full" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">7-Node Balanced</button>
+                    <button id="preset-skewed" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Skewed Chain</button>
+                    <button id="preset-single" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Single Child</button>
+                </div>
+
+                <div class="vis-container">
+                    <!-- Tree Canvas -->
+                    <div class="canvas-box">
+                        <div class="canvas-header">
+                            <span id="vis-status">Status: Ready to initialize</span>
+                            <span id="vis-step-count">Step 0 / 0</span>
+                        </div>
+                        <svg id="tree-svg"></svg>
+                    </div>
+
+                    <!-- Side Info Panels -->
+                    <div class="side-panel">
+                        <div class="info-card">
+                            <h4>Active Partition Pointers</h4>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">Preorder Array:</div>
+                            <div class="array-view" id="pre-array-view"></div>
+
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.6rem;">Postorder Array:</div>
+                            <div class="array-view" id="post-array-view"></div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>Current Recursion Frame</h4>
+                            <div id="frame-details" style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted);">
+                                Press "Initialize Tree" to start.
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>Execution Log</h4>
+                            <div class="log-box" id="exec-log"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Complexity Justification Section -->
+        <section id="complexity">
+            <h2 class="section-title">Time & Space Complexity Justification</h2>
+
+            <div class="theory-grid">
+                <div class="card">
+                    <h3 style="color: var(--accent-blue); margin-bottom: 0.75rem;">1. Linear Search per Partition</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">
+                        At each recursive invocation with a subtree of size \(k\), the algorithm identifies the left child root from preorder (\(\text{preorder}[\text{pre\_start} + 1]\)) and searches for its index in the postorder segment.
+                    </p>
+                    <div class="math-block">
+                        T_{\text{search}}(k) = \mathcal{O}(k) \quad \text{comparisons}
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">
+                        Because we intentionally use a linear search (preserving textbook clarity without hash map overhead), scanning up to \(k\) elements incurs proportional work at every subtree.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 style="color: var(--accent-amber); margin-bottom: 0.75rem;">2. Worst-Case: \(\mathcal{O}(n^2)\)</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">
+                        When the tree is degenerate (e.g. skewed as a chain of length \(n\)), each level decreases the search range by only 1 node:
+                    </p>
+                    <div class="math-block">
+                        T(n) = \sum_{i=1}^{n} \mathcal{O}(n - i) = \mathcal{O}\left(\frac{n(n-1)}{2}\right) = \mathcal{O}(n^2)
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">
+                        Summing this arithmetic series demonstrates how the linear search dominates the execution time in skewed topologies.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 style="color: var(--accent-emerald); margin-bottom: 0.75rem;">3. Best-Case: \(\mathcal{O}(n \log n)\)</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">
+                        When the binary tree is balanced, each step divides the elements into two equal halves of size \(\approx n/2\):
+                    </p>
+                    <div class="math-block">
+                        T(n) = 2\,T\left(\frac{n}{2}\right) + \mathcal{O}(n) \implies \mathcal{O}(n \log n)
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">
+                        By Case 2 of the Master Theorem, the total time across \(\log_2 n\) levels evaluates to \(\mathcal{O}(n \log n)\).
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="color: var(--accent-purple); margin-bottom: 1rem;">Comparative Complexity Summary</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Approach</th>
+                                <th>Worst-Case Time</th>
+                                <th>Best-Case Time</th>
+                                <th>Auxiliary Space</th>
+                                <th>Output Space</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Base Recursive (Linear Search)</strong></td>
+                                <td>\(\mathcal{O}(n^2)\)</td>
+                                <td>\(\mathcal{O}(n \log n)\)</td>
+                                <td>\(\mathcal{O}(h)\) (call stack)</td>
+                                <td>\(\mathcal{O}(n)\)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hash Map Optimized</strong></td>
+                                <td>\(\mathcal{O}(n)\)</td>
+                                <td>\(\mathcal{O}(n)\)</td>
+                                <td>\(\mathcal{O}(n)\) (map storage)</td>
+                                <td>\(\mathcal{O}(n)\)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Structural Ambiguity Section -->
+        <section id="ambiguity">
+            <h2 class="section-title">The Single-Child Structural Ambiguity</h2>
+
+            <div class="card">
+                <p style="color: var(--text-muted); font-size: 0.95rem;">
+                    A key theoretical insight is that <strong>preorder and postorder traversals alone cannot uniquely identify an arbitrary binary tree</strong> when internal nodes have only one child.
+                </p>
+
+                <div class="ambiguity-container">
+                    <div class="ambiguity-box">
+                        <h4 style="color: var(--accent-blue); margin-bottom: 0.5rem;">Tree 1: Left Child</h4>
+                        <svg class="ambiguity-svg" viewBox="0 0 200 130">
+                            <line x1="100" y1="30" x2="60" y2="90" stroke="#38bdf8" stroke-width="2"/>
+                            <circle cx="100" cy="30" r="16" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                            <text x="100" y="35" text-anchor="middle" fill="#fff" font-weight="bold" font-family="sans-serif">A</text>
+                            <circle cx="60" cy="90" r="16" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                            <text x="60" y="95" text-anchor="middle" fill="#fff" font-weight="bold" font-family="sans-serif">B</text>
+                        </svg>
+                        <div style="font-family: var(--font-mono); font-size: 0.85rem; color: #94a3b8;">
+                            Pre: <strong>A B</strong> | Post: <strong>B A</strong>
+                        </div>
+                    </div>
+
+                    <div class="ambiguity-box">
+                        <h4 style="color: var(--accent-rose); margin-bottom: 0.5rem;">Tree 2: Right Child</h4>
+                        <svg class="ambiguity-svg" viewBox="0 0 200 130">
+                            <line x1="100" y1="30" x2="140" y2="90" stroke="#f43f5e" stroke-width="2"/>
+                            <circle cx="100" cy="30" r="16" fill="#1e293b" stroke="#f43f5e" stroke-width="2"/>
+                            <text x="100" y="35" text-anchor="middle" fill="#fff" font-weight="bold" font-family="sans-serif">A</text>
+                            <circle cx="140" cy="90" r="16" fill="#1e293b" stroke="#f43f5e" stroke-width="2"/>
+                            <text x="140" y="95" text-anchor="middle" fill="#fff" font-weight="bold" font-family="sans-serif">B</text>
+                        </svg>
+                        <div style="font-family: var(--font-mono); font-size: 0.85rem; color: #94a3b8;">
+                            Pre: <strong>A B</strong> | Post: <strong>B A</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.25rem; font-size: 0.9rem; color: var(--text-muted); background: var(--bg-secondary); padding: 1rem; border-radius: 6px;">
+                    <strong style="color: var(--accent-amber);">Resolution:</strong>
+                    The base educational algorithm resolves this ambiguity by convention: \(\text{preorder}[\text{pre\_start} + 1]\) is always treated as the root of the <strong>left subtree</strong>. To guarantee strict mathematical uniqueness, one must either assume a <em>Full Binary Tree</em> (every node has 0 or 2 children) or provide <em>explicit null markers</em>.
+                </div>
+            </div>
+        </section>
+
+        <!-- Multi-Language Section -->
+        <section id="multi-lang">
+            <h2 class="section-title">Multi-Language Implementations</h2>
+
+            <div class="card">
+                <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem;">
+                    All four implementations in this repository share the exact same algorithmic structure, recursive boundaries, and input/output contract.
+                </p>
+                <div class="grid-2">
+                    <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: var(--accent-blue);">C (C99/C11)</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.4rem 0;">Explicit memory management with <code>malloc</code>, <code>free</code>, recursive partition logic.</p>
+                        <code style="font-size: 0.8rem; color: var(--accent-emerald);">clang -O2 C/solution.c -o C/solution</code>
+                    </div>
+
+                    <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: var(--accent-blue);">C++ (C++17)</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.4rem 0;">RAII smart pointers with <code>std::unique_ptr&lt;Node&gt;</code>, zero manual memory leaks.</p>
+                        <code style="font-size: 0.8rem; color: var(--accent-emerald);">clang++ -O2 -std=c++17 C++/solution.cpp -o C++/solution</code>
+                    </div>
+
+                    <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: var(--accent-blue);">Java (Java 8+)</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.4rem 0;">Clean Node class, recursive indexing, exception handling for malformed input.</p>
+                        <code style="font-size: 0.8rem; color: var(--accent-emerald);">javac Java/Main.java && java -cp Java Main</code>
+                    </div>
+
+                    <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: var(--accent-blue);">Python (Python 3)</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.4rem 0;">Idiomatic, clean reference implementation used by the unified test runner.</p>
+                        <code style="font-size: 0.8rem; color: var(--accent-emerald);">python3 Python/solution.py</code>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; text-align: center;">
+                    <div style="display: inline-block; background: var(--bg-primary); padding: 0.75rem 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
+                        Run all tests at once: <code style="color: var(--accent-amber); font-weight: bold;">python3 tests/run_tests.py</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>DevDictates &copy; 2026. Educational Data Structures and Algorithms Series.</p>
+        <p style="font-size: 0.8rem; margin-top: 0.4rem;">Maintained by Pragya &bull; Hosted on GitHub Pages</p>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        // State
+        let steps = [];
+        let currentStepIndex = 0;
+        let isPlaying = false;
+        let playInterval = null;
+
+        // DOM elements
+        const preInput = document.getElementById("pre-input");
+        const postInput = document.getElementById("post-input");
+        const btnBuild = document.getElementById("btn-build");
+        const btnStep = document.getElementById("btn-step");
+        const btnPlay = document.getElementById("btn-play");
+        const btnReset = document.getElementById("btn-reset");
+        const treeSvg = document.getElementById("tree-svg");
+        const preArrayView = document.getElementById("pre-array-view");
+        const postArrayView = document.getElementById("post-array-view");
+        const frameDetails = document.getElementById("frame-details");
+        const execLog = document.getElementById("exec-log");
+        const visStatus = document.getElementById("vis-status");
+        const visStepCount = document.getElementById("vis-step-count");
+
+        // Presets
+        document.getElementById("preset-full").addEventListener("click", () => {
+            preInput.value = "A B D E C F G";
+            postInput.value = "D E B F G C A";
+            initVisualizer();
+        });
+
+        document.getElementById("preset-skewed").addEventListener("click", () => {
+            preInput.value = "A B C D";
+            postInput.value = "D C B A";
+            initVisualizer();
+        });
+
+        document.getElementById("preset-single").addEventListener("click", () => {
+            preInput.value = "A B";
+            postInput.value = "B A";
+            initVisualizer();
+        });
+
+        function parseInput() {
+            const pre = preInput.value.trim().split(/\s+/).filter(Boolean);
+            const post = postInput.value.trim().split(/\s+/).filter(Boolean);
+            return { pre, post };
+        }
+
+        // Trace generation
+        function generateSteps(pre, post) {
+            const recordedSteps = [];
+            let nextNodeId = 1;
+
+            function logMessage(msg, type = "normal") {
+                return { msg, type };
+            }
+
+            function build(preStart, preEnd, postStart, postEnd, parentId = null, branch = null) {
+                if (preStart > preEnd) {
+                    return null;
+                }
+
+                const rootVal = pre[preStart];
+                const currentId = nextNodeId++;
+
+                recordedSteps.push({
+                    action: "VISIT_ROOT",
+                    preStart, preEnd, postStart, postEnd,
+                    rootVal, currentId, parentId, branch,
+                    leftVal: null, searchIdx: -1,
+                    log: `Root identified: '${rootVal}' at preorder[${preStart}] and postorder[${postEnd}].`
+                });
+
+                if (preStart === preEnd) {
+                    recordedSteps.push({
+                        action: "LEAF_NODE",
+                        preStart, preEnd, postStart, postEnd,
+                        rootVal, currentId, parentId, branch,
+                        leftVal: null, searchIdx: -1,
+                        log: `Base case reached: '${rootVal}' is a leaf node.`
+                    });
+                    return { id: currentId, val: rootVal, left: null, right: null };
+                }
+
+                const leftRootVal = pre[preStart + 1];
+                let idx = -1;
+                for (let i = postStart; i < postEnd; i++) {
+                    if (post[i] === leftRootVal) {
+                        idx = i;
+                        break;
+                    }
+                }
+
+                recordedSteps.push({
+                    action: "SEARCH_LEFT",
+                    preStart, preEnd, postStart, postEnd,
+                    rootVal, currentId, parentId, branch,
+                    leftVal: leftRootVal, searchIdx: idx,
+                    log: `Linear search for left root '${leftRootVal}' in postorder[${postStart}..${postEnd - 1}] &rarr; found at index ${idx}.`
+                });
+
+                const leftSize = idx - postStart + 1;
+
+                // Left subtree
+                const leftChild = build(
+                    preStart + 1, preStart + leftSize,
+                    postStart, idx,
+                    currentId, "left"
+                );
+
+                // Right subtree
+                const rightChild = build(
+                    preStart + leftSize + 1, preEnd,
+                    idx + 1, postEnd - 1,
+                    currentId, "right"
+                );
+
+                recordedSteps.push({
+                    action: "SUBTREE_COMPLETE",
+                    preStart, preEnd, postStart, postEnd,
+                    rootVal, currentId, parentId, branch,
+                    leftVal: leftRootVal, searchIdx: idx,
+                    log: `Subtree with root '${rootVal}' fully constructed.`
+                });
+
+                return { id: currentId, val: rootVal, left: leftChild, right: rightChild };
+            }
+
+            try {
+                if (pre.length === 0) {
+                    recordedSteps.push({
+                        action: "EMPTY",
+                        log: "Empty traversals provided. Reconstructed tree is empty."
+                    });
+                } else if (pre.length !== post.length) {
+                    recordedSteps.push({
+                        action: "ERROR",
+                        log: `Error: Length mismatch between preorder (${pre.length}) and postorder (${post.length}).`
+                    });
+                } else {
+                    build(0, pre.length - 1, 0, post.length - 1);
+                    recordedSteps.push({
+                        action: "FINISHED",
+                        log: "Reconstruction complete! All subtrees partitioned and assembled successfully."
+                    });
+                }
+            } catch (e) {
+                recordedSteps.push({
+                    action: "ERROR",
+                    log: `Reconstruction error: ${e.message}`
+                });
+            }
+
+            return recordedSteps;
+        }
+
+        function initVisualizer() {
+            pausePlayback();
+            const { pre, post } = parseInput();
+            steps = generateSteps(pre, post);
+            currentStepIndex = 0;
+
+            execLog.innerHTML = "";
+            btnStep.disabled = steps.length <= 1;
+            btnPlay.disabled = steps.length <= 1;
+
+            renderCurrentStep();
+        }
+
+        function renderCurrentStep() {
+            const { pre, post } = parseInput();
+            if (steps.length === 0) return;
+
+            const step = steps[currentStepIndex];
+            visStepCount.textContent = `Step ${currentStepIndex + 1} / ${steps.length}`;
+            visStatus.textContent = `Action: ${step.action}`;
+
+            // Append log line
+            const p = document.createElement("div");
+            p.className = "log-line" + (step.action === "FINISHED" ? " success" : (step.action === "ERROR" ? " highlight" : ""));
+            p.innerHTML = `[Step ${currentStepIndex + 1}] ${step.log}`;
+            execLog.appendChild(p);
+            execLog.scrollTop = execLog.scrollHeight;
+
+            // Render array view
+            renderArrayView(pre, preArrayView, step.preStart, step.preEnd, step.rootVal, step.leftVal);
+            renderArrayView(post, postArrayView, step.postStart, step.postEnd, step.rootVal, step.leftVal, step.searchIdx);
+
+            // Frame details
+            if (step.rootVal) {
+                frameDetails.innerHTML = `
+                    <div><strong>Active Root:</strong> <span style="color:var(--accent-amber); font-weight:bold;">${step.rootVal}</span></div>
+                    <div><strong>Preorder Range:</strong> [${step.preStart} &hellip; ${step.preEnd}]</div>
+                    <div><strong>Postorder Range:</strong> [${step.postStart} &hellip; ${step.postEnd}]</div>
+                    <div><strong>Left Root Candidate:</strong> ${step.leftVal || 'None (Leaf)'}</div>
+                    <div><strong>Postorder Found Index:</strong> ${step.searchIdx >= 0 ? step.searchIdx : 'N/A'}</div>
+                `;
+            } else {
+                frameDetails.innerHTML = `<div>${step.log}</div>`;
+            }
+
+            // Draw SVG Tree
+            drawTree(steps.slice(0, currentStepIndex + 1));
+        }
+
+        function renderArrayView(arr, container, start, end, rootVal, leftVal, searchIdx = -1) {
+            container.innerHTML = "";
+            arr.forEach((val, idx) => {
+                const cell = document.createElement("div");
+                cell.className = "array-cell";
+                cell.textContent = val;
+
+                if (start !== undefined && end !== undefined && idx >= start && idx <= end) {
+                    cell.classList.add("active-range");
+                }
+                if (val === rootVal) {
+                    cell.classList.add("root-cell");
+                }
+                if (val === leftVal) {
+                    cell.classList.add("left-root-cell");
+                }
+                if (idx === searchIdx) {
+                    cell.classList.add("match-cell");
+                }
+
+                container.appendChild(cell);
+            });
+        }
+
+        // SVG Tree drawing
+        function drawTree(appliedSteps) {
+            treeSvg.innerHTML = "";
+            if (appliedSteps.length === 0) return;
+
+            // Reconstruct visible tree nodes up to current step
+            const nodesById = new Map();
+            const links = [];
+
+            appliedSteps.forEach(s => {
+                if (s.action === "VISIT_ROOT" || s.action === "LEAF_NODE") {
+                    nodesById.set(s.currentId, {
+                        id: s.currentId,
+                        val: s.rootVal,
+                        parentId: s.parentId,
+                        branch: s.branch
+                    });
+                    if (s.parentId) {
+                        links.push({ parent: s.parentId, child: s.currentId, branch: s.branch });
+                    }
+                }
+            });
+
+            if (nodesById.size === 0) return;
+
+            // Calculate tree layout (simple hierarchical positioning)
+            const rootNode = Array.from(nodesById.values()).find(n => !n.parentId);
+            if (!rootNode) return;
+
+            const positions = new Map();
+
+            function layout(nodeId, x, y, dx) {
+                positions.set(nodeId, { x, y });
+                const leftChild = links.find(l => l.parent === nodeId && l.branch === "left");
+                const rightChild = links.find(l => l.parent === nodeId && l.branch === "right");
+
+                if (leftChild) layout(leftChild.child, x - dx, y + 65, dx * 0.55);
+                if (rightChild) layout(rightChild.child, x + dx, y + 65, dx * 0.55);
+            }
+
+            layout(rootNode.id, 240, 50, 100);
+
+            // Render links
+            links.forEach(l => {
+                const pPos = positions.get(l.parent);
+                const cPos = positions.get(l.child);
+                if (pPos && cPos) {
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute("x1", pPos.x);
+                    line.setAttribute("y1", pPos.y);
+                    line.setAttribute("x2", cPos.x);
+                    line.setAttribute("y2", cPos.y);
+                    line.setAttribute("stroke", "#475569");
+                    line.setAttribute("stroke-width", "2");
+                    treeSvg.appendChild(line);
+                }
+            });
+
+            // Render nodes
+            nodesById.forEach((node, id) => {
+                const pos = positions.get(id);
+                if (!pos) return;
+
+                const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute("cx", pos.x);
+                circle.setAttribute("cy", pos.y);
+                circle.setAttribute("r", "18");
+                circle.setAttribute("fill", "#1e293b");
+                circle.setAttribute("stroke", "#38bdf8");
+                circle.setAttribute("stroke-width", "2.5");
+
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", pos.x);
+                text.setAttribute("y", pos.y + 5);
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("fill", "#f8fafc");
+                text.setAttribute("font-weight", "bold");
+                text.setAttribute("font-size", "13");
+                text.textContent = node.val;
+
+                g.appendChild(circle);
+                g.appendChild(text);
+                treeSvg.appendChild(g);
+            });
+        }
+
+        // Stepping and Playback
+        function stepForward() {
+            if (currentStepIndex < steps.length - 1) {
+                currentStepIndex++;
+                renderCurrentStep();
+            } else {
+                pausePlayback();
+            }
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                pausePlayback();
+            } else {
+                if (currentStepIndex >= steps.length - 1) {
+                    currentStepIndex = 0;
+                    execLog.innerHTML = "";
+                }
+                isPlaying = true;
+                btnPlay.textContent = "❚❚ Pause";
+                playInterval = setInterval(() => {
+                    if (currentStepIndex < steps.length - 1) {
+                        stepForward();
+                    } else {
+                        pausePlayback();
+                    }
+                }, 900);
+            }
+        }
+
+        function pausePlayback() {
+            isPlaying = false;
+            clearInterval(playInterval);
+            btnPlay.textContent = "▶ Auto Play";
+        }
+
+        btnBuild.addEventListener("click", initVisualizer);
+        btnStep.addEventListener("click", stepForward);
+        btnPlay.addEventListener("click", togglePlay);
+        btnReset.addEventListener("click", initVisualizer);
+
+        // Initial launch
+        initVisualizer();
+    </script>
+</body>
+</html>
