@@ -1,14 +1,14 @@
 # Recursive Tree Construction Algorithm
 
-This document details the recursive algorithm for reconstructing a binary tree from its **preorder** and **postorder** traversals, as presented in the [DevDictates](https://youtube.com) educational series.
+This document explains the recursive algorithm for reconstructing a binary tree from its preorder and postorder traversals, as taught in the [DevDictates](https://youtube.com) educational series.
 
 ---
 
 ## 1. Problem Formulation
 
 Given two sequences representing tree traversals:
-- **Preorder Traversal:** $\text{Root} \to \text{Left Subtree} \to \text{Right Subtree}$
-- **Postorder Traversal:** $\text{Left Subtree} \to \text{Right Subtree} \to \text{Root}$
+* **Preorder Traversal:** $\text{Root} \to \text{Left Subtree} \to \text{Right Subtree}$
+* **Postorder Traversal:** $\text{Left Subtree} \to \text{Right Subtree} \to \text{Root}$
 
 Assume all node values are distinct. Our goal is to reconstruct the original binary tree structure.
 
@@ -16,36 +16,42 @@ Assume all node values are distinct. Our goal is to reconstruct the original bin
 
 ## 2. Fundamental Intuition
 
-1. **Root Identification:**
-   - In **preorder**, the very first element is always the root of the current subtree:
-     $$\text{root} = \text{preorder}[\text{pre\_start}]$$
-   - In **postorder**, the very last element is always the root of that same subtree:
-     $$\text{postorder}[\text{post\_end}] = \text{root}$$
-   - Comparing these two provides immediate validation of the input.
+### 2.1 Root Identification
+* In preorder, the very first element of a segment is always the root of that subtree:
+  $$\text{root} = \text{preorder}[\text{pre\_start}]$$
+* In postorder, the very last element of the corresponding segment must match this root:
+  $$\text{postorder}[\text{post\_end}] = \text{root}$$
+* Comparing these two tokens validates traversal consistency at each recursive step.
 
-2. **Base Cases:**
-   - If the range is empty ($\text{pre\_start} > \text{pre\_end}$), return `NULL`.
-   - If the range has exactly one element ($\text{pre\_start} == \text{pre\_end}$), return a single leaf node.
+### 2.2 Base Cases
+* If `pre_start > pre_end`: The range is empty; return `NULL`.
+* If `pre_start == pre_end`: Exactly one element remains; construct and return a leaf node containing that value.
 
-3. **Subtree Boundary Identification:**
-   - When a subtree has two or more nodes, the element immediately following the root in preorder, $\text{preorder}[\text{pre\_start} + 1]$, must be the root of the **left subtree**.
-   - In postorder traversal, all nodes belonging to the left subtree appear together before the right subtree, and the root of the left subtree appears at the **end** of this left subtree block.
-   - We perform a **linear search** for this left root value inside the current postorder segment: $\text{postorder}[\text{post\_start} \dots \text{post\_end} - 1]$.
-   - Suppose the left root is located at index $\text{idx}$. Then:
-     $$\text{left\_size} = \text{idx} - \text{post\_start} + 1$$
-   - The left subtree contains $\text{left\_size}$ nodes.
+### 2.3 Left Subtree Root Identification
+* When a subtree contains two or more nodes, the element immediately following the root in preorder, `preorder[pre_start + 1]`, identifies the root of the **left subtree**.
+* In postorder traversal, all nodes in the left subtree precede all nodes in the right subtree, with the left subtree root appearing at the end of the left subtree block.
 
-4. **Recursive Partitioning:**
-   - **Left Subtree:**
-     - Preorder range: $[\text{pre\_start} + 1, \quad \text{pre\_start} + \text{left\_size}]$
-     - Postorder range: $[\text{post\_start}, \quad \text{idx}]$
-   - **Right Subtree:**
-     - Preorder range: $[\text{pre\_start} + \text{left\_size} + 1, \quad \text{pre\_end}]$
-     - Postorder range: $[\text{idx} + 1, \quad \text{post\_end} - 1]$
+### 2.4 Linear Search in the Postorder Range
+* We locate the left subtree root value within the active postorder range `postorder[post_start .. post_end - 1]` using a linear search.
+* Suppose the left root is found at index `idx`.
+
+### 2.5 Calculating Left Subtree Size
+* The number of nodes in the left subtree is determined by:
+  $$\text{left\_size} = \text{idx} - \text{post\_start} + 1$$
+
+### 2.6 Recursive Index Partitioning
+Using index boundaries rather than allocating sub-arrays, the ranges for the child subtrees are:
+
+* **Left Subtree:**
+  * Preorder: `[pre_start + 1, pre_start + left_size]`
+  * Postorder: `[post_start, idx]`
+* **Right Subtree:**
+  * Preorder: `[pre_start + left_size + 1, pre_end]`
+  * Postorder: `[idx + 1, post_end - 1]`
 
 ---
 
-## 3. Algorithm Pseudocode
+## 3. Base Recursive Pseudocode
 
 ```text
 BUILD(preorder, postorder):
@@ -75,25 +81,27 @@ BUILD(preorder, postorder):
     return root
 ```
 
-*Note: In production and competitive programming implementations, index pointers are passed rather than allocating sub-arrays, avoiding memory copying overhead.*
+*Note: In all four language implementations in this repository, explicit index boundaries (`pre_start`, `pre_end`, `post_start`, `post_end`) are passed to recursive calls rather than copying slices.*
 
 ---
 
 ## 4. Comprehensive Worked Example
 
-Consider the following traversals:
-- **Preorder:** `A  B  D  E  C  F  G`
-- **Postorder:** `D  E  B  F  G  C  A`
+Consider the traversals:
+* **Preorder:** `A B D E C F G`
+* **Postorder:** `D E B F G C A`
+
+Target binary tree:
 
 ```text
-               A
-             /   \
-            B     C
-           / \   / \
-          D   E F   G
+          A
+        /   \
+       B     C
+      / \   / \
+     D   E F   G
 ```
 
-### Trace Step-by-Step
+### Step-by-Step Recursion Trace
 
 | Level | Subtree Range | Preorder Segment | Postorder Segment | Root | Left Child Value | Found Index in Postorder | `left_size` | Partition |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -101,18 +109,19 @@ Consider the following traversals:
 | **1L** | Left Subtree | `[B, D, E]` | `[D, E, B]` | `B` | `D` | `idx = 0` | $0 - 0 + 1 = 1$ | Left: `D` / `D`<br>Right: `E` / `E` |
 | **2LL**| Left-Left Leaf | `[D]` | `[D]` | `D` | — | — | — | Base case: leaf node |
 | **2LR**| Left-Right Leaf| `[E]` | `[E]` | `E` | — | — | — | Base case: leaf node |
-| **1R** | Right Subtree| `[C, F, G]` | `[F, G, C]` | `C` | `F` | `idx = 3` | $3 - 3 + 1 = 1$ | Left: `F` / `F`<br>Right: `G` / `G` |
+| **1R** | Right Subtree | `[C, F, G]` | `[F, G, C]` | `C` | `F` | `idx = 3` | $3 - 3 + 1 = 1$ | Left: `F` / `F`<br>Right: `G` / `G` |
 | **2RL**| Right-Left Leaf| `[F]` | `[F]` | `F` | — | — | — | Base case: leaf node |
 | **2RR**| Right-Right Leaf| `[G]` | `[G]` | `G` | — | — | — | Base case: leaf node |
 
 ---
 
-## 5. Single-Child Convention
+## 5. Single-Child Convention and Limitations
 
 When an internal node has only one child:
-- Preorder: `A  B`
-- Postorder: `B  A`
+* Preorder: `A B`
+* Postorder: `B A`
 
-The element `B` follows `A` in preorder, so it is treated as the root of the left subtree:
-$$\text{idx} = 0 \implies \text{left\_size} = 1$$
-The left subtree receives `[B]`, and the right subtree receives empty ranges. Thus, `B` is conventionally attached as the **left child**. For a detailed discussion of this ambiguity, see [limitations.md](limitations.md).
+Because `B` immediately follows `A` in preorder, the algorithm treats `B` as the root of the left subtree (`left_size = 1`), leaving the right subtree empty. Thus, the algorithm deterministically attaches single children as **left children**.
+
+* For a full explanation of why ordinary traversals cannot distinguish single left children from single right children, see [Structural Limitations](limitations.md).
+* For detailed time and memory complexity derivations, see [Time and Space Complexity Analysis](time_complexity.md).

@@ -44,111 +44,56 @@ Features include:
 * **Interactive Tree Canvas:** Dynamic SVG tree generation as nodes and parent-child edges are constructed.
 * **Array Range & Pointer Tracker:** Visual highlighting of active preorder and postorder ranges `[pre_start .. pre_end]` and `[post_start .. post_end]`, tracking the root and the linear search scan.
 * **Step-by-Step Playback:** Step forward, pause, and auto-play recursive partition steps.
-* **Complexity Breakdown:** Visualized mathematical justification of the $\mathcal{O}(n^2)$ worst-case time complexity.
+* **Complexity Breakdown:** Visualized mathematical justification of the $O(n^2)$ worst-case time complexity.
 * **Ambiguity Demonstration:** Side-by-side comparison illustrating why single-child trees share identical traversals.
 
 ---
 
-## 3. Algorithm Intuition & Pseudocode
+## 3. Algorithm Intuition
 
-### Subtree Boundary Partitioning
+The reconstruction algorithm partitions traversal sequences recursively:
 
-1. **Root Identification:**
-   * The first token of preorder (`preorder[pre_start]`) is always the root of the current subtree.
-   * The last token of postorder (`postorder[post_end]`) must match this root element.
-2. **Base Cases:**
-   * If `pre_start > pre_end`: return `NULL` (empty subtree).
-   * If `pre_start == pre_end`: return a leaf node containing `preorder[pre_start]`.
-3. **Locating Subtrees:**
-   * The next token, `preorder[pre_start + 1]`, represents the root of the **left subtree**.
-   * Perform a **linear search** for this value inside the postorder range `postorder[post_start .. post_end - 1]`.
-   * Let `idx` be the position where the left root is located. The number of nodes in the left subtree is:
-     $$\text{left\_size} = \text{idx} - \text{post\_start} + 1$$
-4. **Recursive Step:**
-   * **Left Subtree:**
-     * Preorder: `[pre_start + 1, pre_start + left_size]`
-     * Postorder: `[post_start, idx]`
-   * **Right Subtree:**
-     * Preorder: `[pre_start + left_size + 1, pre_end]`
-     * Postorder: `[idx + 1, post_end - 1]`
+1. **Root Identification:** The first token of preorder (`preorder[pre_start]`) is the root of the current subtree and must match the last token of postorder (`postorder[post_end]`).
+2. **Base Cases:** An empty range returns `NULL`; a single-token range returns a leaf node.
+3. **Left Subtree Boundary:** The second token (`preorder[pre_start + 1]`) identifies the root of the left subtree. A linear search locates this value in postorder to compute the left subtree size:
+   $$\text{left\_size} = \text{idx} - \text{post\_start} + 1$$
+4. **Recursive Step:** Subtrees are partitioned recursively using index boundaries without copying subarrays.
 
-### Base Recursive Pseudocode
-
-```text
-BUILD(preorder, postorder):
-    if preorder is empty:
-        return NULL
-
-    root = new Node(preorder[0])
-
-    if preorder has only one element:
-        return root
-
-    leftRoot = preorder[1]
-
-    Find leftRoot in postorder (linear search)
-    leftSize = its index + 1
-
-    root.left = BUILD(
-        preorder[1 : leftSize + 1],
-        postorder[0 : leftSize]
-    )
-
-    root.right = BUILD(
-        preorder[leftSize + 1 :],
-        postorder[leftSize : n - 1]
-    )
-
-    return root
-```
-
-*Note: In all four language implementations, index boundaries are passed rather than allocating sub-arrays, avoiding memory copying overhead.*
+For full pseudocode, mathematical intuition, and step-by-step recursion trace, see:
+* [Detailed Algorithm Walkthrough](docs/algorithm.md)
 
 ---
 
-## 4. Fundamental Limitation: The Single-Child Ambiguity
+## 4. Fundamental Limitation: Single-Child Ambiguity
 
-Can an arbitrary binary tree be uniquely reconstructed from preorder and postorder traversals alone? **No.**
+Preorder and postorder traversals alone **cannot uniquely determine** an arbitrary binary tree when internal nodes have only one child.
 
-Consider a parent `A` with a single child `B`:
+For example, a parent `A` with a single child `B` produces identical traversals regardless of child orientation:
+* **Left Child:** Preorder `A B`, Postorder `B A`
+* **Right Child:** Preorder `A B`, Postorder `B A`
 
-```text
-    Tree 1: Left Child        Tree 2: Right Child
-          A                         A
-         /                           \
-        B                             B
-```
+### Resolution:
+* **Base Convention:** The algorithm deterministically attaches single children to the left branch.
+* **Guaranteed Uniqueness:** Unique reconstruction requires either the **Full Binary Tree assumption** (every node has 0 or 2 children) or **explicit null markers** (`#`).
 
-Both trees produce the identical traversals:
-* **Preorder:** `A B`
-* **Postorder:** `B A`
-
-Because preorder visits the root first and postorder visits the root last, neither traversal encodes whether a single child is on the left or the right.
-
-### Resolutions:
-1. **Base Approach (Standard Convention):** The algorithm deterministically assumes `preorder[pre_start + 1]` is the left child, attaching single children to the left branch.
-2. **Full Binary Tree Constraint:** If every node is guaranteed to have either 0 or 2 children, ambiguity cannot occur, and reconstruction is mathematically unique.
-3. **Explicit Null Markers:** Augmenting traversals with `#` tokens for missing children preserves branch orientation.
-
-For a detailed analysis, see [docs/limitations.md](docs/limitations.md).
+For complete proofs and structural diagrams, see:
+* [Structural Limitations](docs/limitations.md)
 
 ---
 
-## 5. Complexity Analysis
+## 5. Complexity Summary
 
-| Approach | Worst-Case Time | Best-Case Time (Balanced) | Auxiliary Space | Output Space |
+| Approach | Worst-Case Time | Balanced-Tree Time | Auxiliary Space | Output Space |
 | :--- | :---: | :---: | :---: | :---: |
-| **Base Recursive (Linear Search)** | $\mathcal{O}(n^2)$ | $\mathcal{O}(n \log n)$ | $\mathcal{O}(h)$ | $\mathcal{O}(n)$ |
-| **Hash Map Optimized** | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ |
+| **Base Recursive (Linear Search)** | $O(n^2)$ | $O(n \log n)$ | $O(h)$ (recursion stack) | $O(n)$ |
+| **Hash Map Optimized** | $O(n)$ | $O(n)$ | $O(n)$ (map + stack) | $O(n)$ |
 
-### Justification:
-* **Time Complexity $\mathcal{O}(n^2)$:** At each recursive step for a subtree of size $k$, linear search in postorder takes $\mathcal{O}(k)$ time. In a degenerate skewed tree, the total search time is:
-  $$\sum_{i=1}^n \mathcal{O}(n - i) = \mathcal{O}\left(\frac{n(n-1)}{2}\right) = \mathcal{O}(n^2)$$
-  In a balanced tree, the recurrence is $T(n) = 2T(n/2) + \mathcal{O}(n) = \mathcal{O}(n \log n)$.
-* **Auxiliary Space $\mathcal{O}(h)$:** Only index boundaries are maintained; the memory overhead consists purely of call stack frames proportional to tree height $h \in [\lfloor \log_2 n \rfloor, n]$.
-* **Output Space $\mathcal{O}(n)$:** Required for allocating the $n$ tree nodes.
+* **Time Complexity $O(n^2)$:** In a highly unbalanced Full Binary Tree (e.g., comb-shaped tree), linear search over shrinking subarrays yields an arithmetic series $T(n) = T(n - 2) + O(n) = O(n^2)$.
+* **Auxiliary Space $O(h)$:** Only index boundaries are maintained; memory overhead consists strictly of recursion call stack frames proportional to tree height $h \in [O(\log n), O(n)]$.
+* **Output Space $O(n)$:** Dynamically allocated tree node storage, accounted for separately from auxiliary memory.
 
-For full mathematical proofs, see [docs/complexity_analysis.md](docs/complexity_analysis.md).
+For complete mathematical derivations and Master Theorem proofs, see:
+* [Detailed Time and Space Complexity Analysis](docs/time_complexity.md)
 
 ---
 
@@ -278,7 +223,7 @@ binary-tree-construction/
 │
 ├── docs/
 │   ├── algorithm.md                                  # Detailed algorithm walkthrough
-│   ├── complexity_analysis.md                        # Time & space complexity proofs
+│   ├── time_complexity.md                            # Comprehensive time & space complexity analysis
 │   └── limitations.md                                # Structural ambiguity & constraints
 │
 └── notes/
