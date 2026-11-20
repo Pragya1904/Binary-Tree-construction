@@ -5,7 +5,7 @@
 [![License: DevDictates](https://img.shields.io/badge/license-DevDictates-purple.svg)](LICENSE)
 [![GitHub Pages](https://img.shields.io/badge/demo-GitHub%20Pages-orange.svg)](index.html)
 
-A self-contained, multi-language educational repository demonstrating how to reconstruct a **Binary Tree** from its **preorder** and **postorder** traversal sequences. Accompanies the [DevDictates](https://youtube.com) educational Data Structures and Algorithms series.
+A self-contained, multi-language educational repository demonstrating how to reconstruct a **Binary Tree** from its **preorder** and **postorder** traversal sequences. Accompanies the [DevDictates]([https://youtube.com](https://youtu.be/MhPQI_-URdc?si=4rcDoNg9j7TxBlWZ)) educational Data Structures and Algorithms series.
 
 ---
 
