@@ -28,10 +28,10 @@ At each recursive call processing a subtree of size $k$:
 
 | Operation | Time Complexity | Details |
 | :--- | :---: | :--- |
-| Extract and validate root | $O(1)$ | Compare `preorder[pre_start]` with `postorder[post_end]` |
-| Identify left root candidate | $O(1)$ | Read `preorder[pre_start + 1]` |
-| Search for left root in postorder | $O(s)$ | Linear scan over range of size $s = k - 1$ |
-| Compute partition boundary | $O(1)$ | `left_size = idx - post_start + 1` |
+| Extract and validate root | O(1) | Compare `preorder[pre_start]` with `postorder[post_end]` |
+| Identify left root candidate | O(1) | Read `preorder[pre_start + 1]` |
+| Search for left root in postorder | O(s) | Linear scan over range of size $s = k - 1$ |
+| Compute partition boundary | O(1) | `left_size = idx - post_start + 1` |
 | Recursive calls | Subproblems | Recurse on left and right subtrees |
 
 Every node is allocated and initialized exactly once, contributing $O(n)$ total node-creation work. The dominant operational cost at each level is the linear search.
@@ -103,8 +103,8 @@ Memory is categorized into three distinct components:
 
 1. **Auxiliary Stack Space ($S_{\text{auxiliary}} = O(h)$):**
    The algorithm passes index boundaries (`pre_start`, `pre_end`, `post_start`, `post_end`) rather than copying subarrays. The only auxiliary memory consumed is the recursion call stack:
-   * **Balanced Tree:** Height $h = O(\log n) \implies O(\log n)$ stack depth.
-   * **Worst-Case Comb Tree:** Height $h = O(n) \implies O(n)$ stack depth.
+   * **Balanced Tree:** Height $h = O(\log n)$, giving $O(\log n)$ stack depth.
+   * **Worst-Case Comb Tree:** Height $h = O(n)$, giving $O(n)$ stack depth.
 
    Therefore:
 
@@ -179,13 +179,13 @@ We must distinguish between reconstruction alone and reconstruction with stored 
 
 | Metric | Base Recursive (Linear Search) | Hash Map Optimized | Explicit Null Markers |
 | :--- | :---: | :---: | :---: |
-| **Subtree Boundary Identification** | Linear search: $O(s)$ | Hash map lookup: $O(1)$ | Encoded in null markers |
-| **Worst-Case Time** | $O(n^2)$ | $O(n)$ | $O(n)$ |
-| **Balanced-Tree Time** | $O(n \log n)$ | $O(n)$ | $O(n)$ |
-| **Auxiliary Space (Stack Only)** | $O(h)$ | $O(h)$ | $O(h)$ |
-| **Auxiliary Space (with Stored Validation)** | N/A | N/A | $O(n)$ |
-| **Additional Lookup Storage** | None ($O(1)$) | $O(n)$ hash table | None ($O(1)$) |
-| **Output Space** | $O(n)$ | $O(n)$ | $O(n)$ |
+| **Subtree Boundary Identification** | Linear search: O(s) | Hash map lookup: O(1) | Encoded in null markers |
+| **Worst-Case Time** | O(n²) | O(n) | O(n) |
+| **Balanced-Tree Time** | O(n log n) | O(n) | O(n) |
+| **Auxiliary Space (Stack Only)** | O(h) | O(h) | O(h) |
+| **Auxiliary Space (with Stored Validation)** | N/A | N/A | O(n) |
+| **Additional Lookup Storage** | None (O(1)) | O(n) hash table | None (O(1)) |
+| **Output Space** | O(n) | O(n) | O(n) |
 | **Reconstruction Uniqueness** | Requires Full Tree assumption | Requires Full Tree assumption | Reconstructs arbitrary binary trees |
 
 ---

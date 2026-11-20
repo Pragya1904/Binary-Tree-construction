@@ -56,7 +56,9 @@ The reconstruction algorithm partitions traversal sequences recursively:
 1. **Root Identification:** The first token of preorder (`preorder[pre_start]`) is the root of the current subtree and must match the last token of postorder (`postorder[post_end]`).
 2. **Base Cases:** An empty range returns `NULL`; a single-token range returns a leaf node.
 3. **Left Subtree Boundary:** The second token (`preorder[pre_start + 1]`) identifies the root of the left subtree. A linear search locates this value in postorder to compute the left subtree size:
-   $$\text{left\_size} = \text{idx} - \text{post\_start} + 1$$
+   ```text
+   left_size = idx - post_start + 1
+   ```
 4. **Recursive Step:** Subtrees are partitioned recursively using index boundaries without copying subarrays.
 
 For full pseudocode, mathematical intuition, and step-by-step recursion trace, see:
@@ -85,12 +87,13 @@ For complete proofs and structural diagrams, see:
 
 | Approach | Worst-Case Time | Balanced-Tree Time | Auxiliary Space | Output Space |
 | :--- | :---: | :---: | :---: | :---: |
-| **Base Recursive (Linear Search)** | $O(n^2)$ | $O(n \log n)$ | $O(h)$ (recursion stack) | $O(n)$ |
-| **Hash Map Optimized** | $O(n)$ | $O(n)$ | $O(n)$ (map + stack) | $O(n)$ |
+| **Base Recursive (Linear Search)** | O(n²) | O(n log n) | O(h) (recursion stack) | O(n) |
+| **Hash Map Optimized** | O(n) | O(n) | O(n) (map + stack) | O(n) |
 
-* **Time Complexity $O(n^2)$:** In a highly unbalanced Full Binary Tree (e.g., comb-shaped tree), linear search over shrinking subarrays yields an arithmetic series $T(n) = T(n - 2) + O(n) = O(n^2)$.
-* **Auxiliary Space $O(h)$:** Only index boundaries are maintained; memory overhead consists strictly of recursion call stack frames proportional to tree height $h \in [O(\log n), O(n)]$.
-* **Output Space $O(n)$:** Dynamically allocated tree node storage, accounted for separately from auxiliary memory.
+* **Time Complexity O(n²):** In a highly unbalanced Full Binary Tree (e.g., comb-shaped tree), linear search over shrinking subarrays yields an arithmetic series:
+  $$T(n) = T(n - 2) + O(n) = O(n^2)$$
+* **Auxiliary Space O(h):** Only index boundaries are maintained; memory overhead consists strictly of recursion call stack frames proportional to tree height $h \in [O(\log n), O(n)]$.
+* **Output Space O(n):** Dynamically allocated tree node storage, accounted for separately from auxiliary memory.
 
 For complete mathematical derivations and Master Theorem proofs, see:
 * [Detailed Time and Space Complexity Analysis](docs/time_complexity.md)

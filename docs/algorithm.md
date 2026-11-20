@@ -18,9 +18,13 @@ Assume all node values are distinct. Our goal is to reconstruct the original bin
 
 ### 2.1 Root Identification
 * In preorder, the very first element of a segment is always the root of that subtree:
-  $$\text{root} = \text{preorder}[\text{pre\_start}]$$
+  ```text
+  root = preorder[pre_start]
+  ```
 * In postorder, the very last element of the corresponding segment must match this root:
-  $$\text{postorder}[\text{post\_end}] = \text{root}$$
+  ```text
+  postorder[post_end] == root
+  ```
 * Comparing these two tokens validates traversal consistency at each recursive step.
 
 ### 2.2 Base Cases
@@ -37,7 +41,9 @@ Assume all node values are distinct. Our goal is to reconstruct the original bin
 
 ### 2.5 Calculating Left Subtree Size
 * The number of nodes in the left subtree is determined by:
-  $$\text{left\_size} = \text{idx} - \text{post\_start} + 1$$
+  ```text
+  left_size = idx - post_start + 1
+  ```
 
 ### 2.6 Recursive Index Partitioning
 Using index boundaries rather than allocating sub-arrays, the ranges for the child subtrees are:
