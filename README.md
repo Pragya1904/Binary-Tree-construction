@@ -38,7 +38,7 @@ The reconstructed binary tree is:
 
 ## 2. Interactive Web Visualizer
 
-This repository includes a standalone static web application in [`index.html`](index.html) designed for direct deployment to **GitHub Pages**.
+This repository includes a standalone static web application in [`index.html`](https://pragya1904.github.io/Binary-Tree-construction/) designed for direct deployment to **GitHub Pages**.
 
 Features include:
 * **Interactive Tree Canvas:** Dynamic SVG tree generation as nodes and parent-child edges are constructed.
