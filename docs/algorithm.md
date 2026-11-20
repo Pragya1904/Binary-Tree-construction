@@ -1,8 +1,9 @@
 # Recursive Tree Construction Algorithm
 
-This document explains the recursive algorithm for reconstructing a binary tree from its preorder and postorder traversals, as taught in the [DevDictates](https://youtu.be/MhPQI_-URdc?si=79iNqYZenbszplLm) educational series.
+This document explains the recursive algorithm for reconstructing a binary tree from its preorder and postorder traversals, as taught in the DevDictates educational series.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/MhPQI_-URdc?si=79iNqYZenbszplLm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![Watch the video](https://youtube.com)](https://youtu.be/MhPQI_-URdc?si=79iNqYZenbszplLm)
+
 ---
 
 ## 1. Problem Formulation
