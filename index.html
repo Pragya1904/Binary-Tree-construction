@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevDictates | Binary Tree Reconstruction Visualizer</title>
+    <!-- KaTeX for mathematical notation rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
     <style>
         :root {
             --bg-primary: #0f172a;
@@ -341,14 +345,39 @@
         }
 
         .math-block {
-            background: #090d16;
-            border-left: 3px solid var(--accent-blue);
-            padding: 0.75rem 1rem;
-            font-family: var(--font-mono);
-            font-size: 0.9rem;
-            color: #38bdf8;
-            margin: 0.75rem 0;
-            border-radius: 0 6px 6px 0;
+            background: rgba(9, 13, 22, 0.85);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem 1.25rem;
+            margin: 0.85rem 0;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1.05rem;
+            overflow-x: auto;
+            text-align: center;
+        }
+
+        .math-inline {
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .katex-display {
+            margin: 0.35rem 0 !important;
+        }
+
+        .katex {
+            font-size: 1.05em;
+        }
+
+        .katex-html {
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
         }
 
         .table-responsive {
@@ -366,12 +395,14 @@
             padding: 0.85rem 1rem;
             text-align: left;
             border-bottom: 1px solid var(--border);
+            vertical-align: middle;
         }
 
         th {
             background-color: var(--bg-secondary);
             color: var(--text-muted);
             font-weight: 600;
+            white-space: nowrap;
         }
 
         tr:hover td {
@@ -421,7 +452,7 @@
         <span class="badge">DevDictates • Algorithms Visualized</span>
         <h1>Binary Tree Reconstruction Visualizer</h1>
         <p class="subtitle">
-            Explore step-by-step subtree partitioning, recursive boundary tracking, and the mathematical justification for the \(\mathcal{O}(n^2)\) time complexity.
+            Explore step-by-step subtree partitioning, recursive boundary tracking, and the mathematical justification for the <span class="math-inline">\(\mathcal{O}(n^2)\)</span> time complexity.
         </p>
         <div class="nav-links">
             <a href="#visualizer">Interactive Visualizer</a>
@@ -499,45 +530,61 @@
 
         <!-- Complexity Justification Section -->
         <section id="complexity">
-            <h2 class="section-title">Time & Space Complexity Justification</h2>
+            <h2 class="section-title">Time &amp; Space Complexity Justification</h2>
 
             <div class="theory-grid">
                 <div class="card">
-                    <h3 style="color: var(--accent-blue); margin-bottom: 0.75rem;">1. Linear Search per Partition</h3>
-                    <p style="font-size: 0.95rem; color: var(--text-muted);">
-                        At each recursive invocation with a subtree of size \(k\), the algorithm identifies the left child root from preorder (\(\text{preorder}[\text{pre\_start} + 1]\)) and searches for its index in the postorder segment.
+                    <h3 style="color: var(--accent-blue); margin-bottom: 0.75rem;">1. Linear Search per Partition: <span class="math-inline">\(O(k)\)</span></h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                        At each recursive invocation with a subtree of size <span class="math-inline">\(k\)</span>, the algorithm identifies the left child root from preorder (<span class="math-inline">\(\text{preorder}[\text{pre\_start} + 1]\)</span>) and performs a linear search for its index in the postorder segment.
                     </p>
                     <div class="math-block">
-                        T_{\text{search}}(k) = \mathcal{O}(k) \quad \text{comparisons}
+                        \[ T_{\text{search}}(k) = O(k) \]
                     </div>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">
-                        Because we intentionally use a linear search (preserving textbook clarity without hash map overhead), scanning up to \(k\) elements incurs proportional work at every subtree.
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.75rem;">
+                        Because we intentionally use a linear search (preserving textbook clarity without hash map lookup overhead), scanning up to <span class="math-inline">\(k\)</span> elements incurs proportional work at every subtree.
                     </p>
                 </div>
 
                 <div class="card">
-                    <h3 style="color: var(--accent-amber); margin-bottom: 0.75rem;">2. Worst-Case: \(\mathcal{O}(n^2)\)</h3>
-                    <p style="font-size: 0.95rem; color: var(--text-muted);">
-                        When the tree is degenerate (e.g. skewed as a chain of length \(n\)), each level decreases the search range by only 1 node:
+                    <h3 style="color: var(--accent-amber); margin-bottom: 0.75rem;">2. Worst-Case Time: <span class="math-inline">\(O(n^2)\)</span></h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                        Under the Full Binary Tree assumption, every internal node has two children. In a highly unbalanced full binary tree (such as a comb-shaped tree where each internal node has one leaf child and one recursive subtree of size <span class="math-inline">\(n - 2\)</span>), the search range decreases by only two nodes per level:
                     </p>
                     <div class="math-block">
-                        T(n) = \sum_{i=1}^{n} \mathcal{O}(n - i) = \mathcal{O}\left(\frac{n(n-1)}{2}\right) = \mathcal{O}(n^2)
+                        \[ T(n) = T(n - 2) + O(n) \]
+                        \[ T(n) = O(n^2) \]
                     </div>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">
-                        Summing this arithmetic series demonstrates how the linear search dominates the execution time in skewed topologies.
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.75rem;">
+                        Expanding the arithmetic summation <span class="math-inline">\(\sum_{i=0}^{(n-1)/2} O(n - 2i)\)</span> demonstrates how the linear search dominates execution time in unbalanced full binary trees.
                     </p>
                 </div>
 
                 <div class="card">
-                    <h3 style="color: var(--accent-emerald); margin-bottom: 0.75rem;">3. Best-Case: \(\mathcal{O}(n \log n)\)</h3>
-                    <p style="font-size: 0.95rem; color: var(--text-muted);">
-                        When the binary tree is balanced, each step divides the elements into two equal halves of size \(\approx n/2\):
+                    <h3 style="color: var(--accent-emerald); margin-bottom: 0.75rem;">3. Best-Case Time: <span class="math-inline">\(O(n \log n)\)</span></h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                        When the full binary tree is balanced, each partition step divides the elements into two subtrees of approximately equal size <span class="math-inline">\(\approx n/2\)</span>:
                     </p>
                     <div class="math-block">
-                        T(n) = 2\,T\left(\frac{n}{2}\right) + \mathcal{O}(n) \implies \mathcal{O}(n \log n)
+                        \[ T(n) = 2T(n/2) + O(n) \]
+                        \[ T(n) = O(n \log n) \]
                     </div>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">
-                        By Case 2 of the Master Theorem, the total time across \(\log_2 n\) levels evaluates to \(\mathcal{O}(n \log n)\).
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.75rem;">
+                        By Case 2 of the Master Theorem, solving this recurrence across <span class="math-inline">\(\log_2 n\)</span> levels with <span class="math-inline">\(O(n)\)</span> total search work per level yields <span class="math-inline">\(O(n \log n)\)</span>.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 style="color: var(--accent-purple); margin-bottom: 0.75rem;">4. Auxiliary Space: <span class="math-inline">\(O(h)\)</span> vs. Output Space: <span class="math-inline">\(O(n)\)</span></h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                        The algorithm maintains only index boundaries, avoiding sub-array allocations. Memory is strictly separated into auxiliary stack frames and output tree storage:
+                    </p>
+                    <div class="math-block">
+                        \[ \text{Auxiliary Stack Space} = O(h) \]
+                        \[ \text{Output Tree Space} = O(n) \]
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.75rem;">
+                        Auxiliary stack space is proportional to tree height <span class="math-inline">\(h\)</span>: worst-case <span class="math-inline">\(O(n)\)</span> for unbalanced trees and <span class="math-inline">\(O(\log n)\)</span> for balanced trees. The <span class="math-inline">\(O(n)\)</span> output tree storage is accounted for separately.
                     </p>
                 </div>
             </div>
@@ -548,7 +595,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Approach</th>
+                                <th style="min-width: 190px;">Approach</th>
                                 <th>Worst-Case Time</th>
                                 <th>Best-Case Time</th>
                                 <th>Auxiliary Space</th>
@@ -558,17 +605,17 @@
                         <tbody>
                             <tr>
                                 <td><strong>Base Recursive (Linear Search)</strong></td>
-                                <td>\(\mathcal{O}(n^2)\)</td>
-                                <td>\(\mathcal{O}(n \log n)\)</td>
-                                <td>\(\mathcal{O}(h)\) (call stack)</td>
-                                <td>\(\mathcal{O}(n)\)</td>
+                                <td><span class="math-inline">\(O(n^2)\)</span></td>
+                                <td><span class="math-inline">\(O(n \log n)\)</span></td>
+                                <td><span class="math-inline">\(O(h)\)</span> <span style="font-size: 0.85rem; color: var(--text-muted);">(recursion stack, \(h \le n\))</span></td>
+                                <td><span class="math-inline">\(O(n)\)</span> <span style="font-size: 0.85rem; color: var(--text-muted);">(tree nodes)</span></td>
                             </tr>
                             <tr>
                                 <td><strong>Hash Map Optimized</strong></td>
-                                <td>\(\mathcal{O}(n)\)</td>
-                                <td>\(\mathcal{O}(n)\)</td>
-                                <td>\(\mathcal{O}(n)\) (map storage)</td>
-                                <td>\(\mathcal{O}(n)\)</td>
+                                <td><span class="math-inline">\(O(n)\)</span></td>
+                                <td><span class="math-inline">\(O(n)\)</span></td>
+                                <td><span class="math-inline">\(O(n)\)</span> <span style="font-size: 0.85rem; color: var(--text-muted);">(hash table + stack)</span></td>
+                                <td><span class="math-inline">\(O(n)\)</span> <span style="font-size: 0.85rem; color: var(--text-muted);">(tree nodes)</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -578,11 +625,15 @@
 
         <!-- Structural Ambiguity Section -->
         <section id="ambiguity">
-            <h2 class="section-title">The Single-Child Structural Ambiguity</h2>
+            <h2 class="section-title">Limitations &amp; Structural Ambiguity</h2>
 
             <div class="card">
-                <p style="color: var(--text-muted); font-size: 0.95rem;">
-                    A key theoretical insight is that <strong>preorder and postorder traversals alone cannot uniquely identify an arbitrary binary tree</strong> when internal nodes have only one child.
+                <h3 style="color: var(--accent-amber); margin-bottom: 0.75rem;">Ambiguity in Reconstruction</h3>
+                <p style="color: var(--text-main); font-size: 0.95rem; margin-bottom: 0.75rem;">
+                    The algorithm treats the next element in preorder as the root of the left subtree (<span class="math-inline">\(\text{preorder}[\text{pre\_start} + 1]\)</span>). However, preorder and postorder traversals alone cannot uniquely determine the structure of every arbitrary binary tree.
+                </p>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem;">
+                    For example, if a node has only one child, the traversals cannot establish whether that child belongs on the left or right.
                 </p>
 
                 <div class="ambiguity-container">
@@ -615,9 +666,12 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 1.25rem; font-size: 0.9rem; color: var(--text-muted); background: var(--bg-secondary); padding: 1rem; border-radius: 6px;">
-                    <strong style="color: var(--accent-amber);">Resolution:</strong>
-                    The base educational algorithm resolves this ambiguity by convention: \(\text{preorder}[\text{pre\_start} + 1]\) is always treated as the root of the <strong>left subtree</strong>. To guarantee strict mathematical uniqueness, one must either assume a <em>Full Binary Tree</em> (every node has 0 or 2 children) or provide <em>explicit null markers</em>.
+                <div style="margin-top: 1.5rem; font-size: 0.95rem; color: var(--text-main); background: var(--bg-secondary); border-left: 4px solid var(--accent-amber); padding: 1.25rem; border-radius: 6px;">
+                    <p style="font-weight: 600; color: var(--accent-amber); margin-bottom: 0.6rem;">To guarantee unique reconstruction, one of the following conditions must hold:</p>
+                    <ol style="padding-left: 1.4rem; color: var(--text-muted); line-height: 1.7;">
+                        <li><strong style="color: var(--text-main);">Full Binary Tree assumption:</strong> Every node has either zero or two children. Under this assumption, and assuming distinct node values and valid traversals, the reconstruction is uniquely determined.</li>
+                        <li><strong style="color: var(--text-main);">Explicit null markers:</strong> Missing child positions are represented explicitly in the traversals, allowing arbitrary binary tree structures to be reconstructed.</li>
+                    </ol>
                 </div>
             </div>
         </section>
@@ -1030,6 +1084,85 @@
 
         // Initial launch
         initVisualizer();
+
+        // Mathematical Notation Rendering
+        function renderMath() {
+            if (typeof renderMathInElement === "function") {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        { left: "$$", right: "$$", display: true },
+                        { left: "\\[", right: "\\]", display: true },
+                        { left: "\\(", right: "\\)", display: false },
+                        { left: "$", right: "$", display: false }
+                    ],
+                    throwOnError: false
+                });
+            } else {
+                applyMathFallback();
+            }
+        }
+
+        function applyMathFallback() {
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+            const nodesToReplace = [];
+            while (walker.nextNode()) {
+                const node = walker.currentNode;
+                if (node.nodeValue && (node.nodeValue.includes("\\(") || node.nodeValue.includes("\\[") || node.nodeValue.includes("$$"))) {
+                    nodesToReplace.push(node);
+                }
+            }
+            nodesToReplace.forEach(node => {
+                let text = node.nodeValue;
+                text = text.replace(/\\\[\s*([\s\S]*?)\s*\\\]/g, (m, eq) => formatFallbackEq(eq, true));
+                text = text.replace(/\$\$\s*([\s\S]*?)\s*\$\$/g, (m, eq) => formatFallbackEq(eq, true));
+                text = text.replace(/\\\(\s*([\s\S]*?)\s*\\\)/g, (m, eq) => formatFallbackEq(eq, false));
+                const span = document.createElement("span");
+                span.innerHTML = text;
+                node.parentNode.replaceChild(span, node);
+            });
+        }
+
+        function formatFallbackEq(latex, isBlock) {
+            let clean = latex
+                .replace(/\\mathcal\{O\}/g, "<i>O</i>")
+                .replace(/\\mathcal\{([A-Z])\}/g, "<i>$1</i>")
+                .replace(/\\text\{preorder\}\[\\text\{pre\\_start\}\s*\+\s*1\]/g, "<code>preorder[pre_start + 1]</code>")
+                .replace(/\\text\{Auxiliary Stack Space\}/g, "Auxiliary Stack Space")
+                .replace(/\\text\{Output Tree Space\}/g, "Output Tree Space")
+                .replace(/\\text\{([a-zA-Z0-9_ ]+)\}/g, "$1")
+                .replace(/\\log_2/g, "log<sub>2</sub>")
+                .replace(/\\log/g, "log")
+                .replace(/\\sum_\{([^}]+)\}\^\{([^}]+)\}/g, "&sum;<sub>$1</sub><sup>$2</sup>")
+                .replace(/\\sum/g, "&sum;")
+                .replace(/\\approx/g, "&approx;")
+                .replace(/\\le/g, "&le;")
+                .replace(/\\in/g, "&isin;")
+                .replace(/\\quad/g, "&nbsp;&nbsp;")
+                .replace(/\\,/g, "&nbsp;")
+                .replace(/\\implies/g, "&rArr;")
+                .replace(/T\(([^)]+)\)/g, "<i>T</i>($1)")
+                .replace(/T_\{([^}]+)\}\(([^)]+)\)/g, "<i>T</i><sub>$1</sub>($2)")
+                .replace(/O\(([^)]+)\)/g, "<i>O</i>($1)")
+                .replace(/([a-zA-Z])\^2/g, "$1<sup>2</sup>")
+                .replace(/([a-zA-Z])_\{([^}]+)\}/g, "$1<sub>$2</sub>")
+                .replace(/\b([nkh])\b/g, "<i>$1</i>");
+            return isBlock
+                ? `<div class="fallback-eq-block" style="text-align:center; padding: 0.35rem 0; font-family: var(--font-mono); font-size: 1.05rem; color: #38bdf8;">${clean}</div>`
+                : `<span class="fallback-eq-inline" style="font-family: var(--font-mono);">${clean}</span>`;
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            if (typeof renderMathInElement === "function") {
+                renderMath();
+            } else {
+                setTimeout(renderMath, 300);
+            }
+        });
+        window.addEventListener("load", () => {
+            if (typeof renderMathInElement === "function") {
+                renderMath();
+            }
+        });
     </script>
 </body>
 </html>

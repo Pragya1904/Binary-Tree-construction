@@ -1,0 +1,54 @@
+=== TEST test_01_single_node ===
+A
+A
+
+=== TEST test_02_balanced_3nodes ===
+A B C
+B C A
+
+=== TEST test_03_full_tree_7nodes ===
+A B D E C F G
+D E B F G C A
+
+=== TEST test_04_single_left_child ===
+A B
+B A
+
+=== TEST test_05_skewed_left_chain ===
+A B C
+C B A
+
+=== TEST test_06_deeper_left ===
+A B D E C
+D E B C A
+
+=== TEST test_07_deeper_right ===
+A B C F G
+B F G C A
+
+=== TEST test_08_unequal_heights ===
+1 2 4 8 9 5 3 6 7
+8 9 4 5 2 6 7 3 1
+
+=== TEST test_09_empty_tree ===
+
+
+=== TEST test_10_mismatched_roots ===
+A B
+B C
+
+=== TEST test_11_length_mismatch ===
+A B C
+B A
+
+=== TEST test_12_duplicate_values ===
+A B B
+B B A
+
+=== TEST test_13_mismatched_elements ===
+A B C
+D E A
+
+=== TEST test_14_inconsistent_traversal ===
+A B C
+A B C

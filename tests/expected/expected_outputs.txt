@@ -1,0 +1,59 @@
+=== TEST test_01_single_node ===
+STATUS: SUCCESS
+PREORDER: A # #
+POSTORDER: # # A
+
+=== TEST test_02_balanced_3nodes ===
+STATUS: SUCCESS
+PREORDER: A B # # C # #
+POSTORDER: # # B # # C A
+
+=== TEST test_03_full_tree_7nodes ===
+STATUS: SUCCESS
+PREORDER: A B D # # E # # C F # # G # #
+POSTORDER: # # D # # E B # # F # # G C A
+
+=== TEST test_04_single_left_child ===
+STATUS: SUCCESS
+PREORDER: A B # # #
+POSTORDER: # # B # A
+
+=== TEST test_05_skewed_left_chain ===
+STATUS: SUCCESS
+PREORDER: A B C # # # #
+POSTORDER: # # C # B # A
+
+=== TEST test_06_deeper_left ===
+STATUS: SUCCESS
+PREORDER: A B D # # E # # C # #
+POSTORDER: # # D # # E B # # C A
+
+=== TEST test_07_deeper_right ===
+STATUS: SUCCESS
+PREORDER: A B # # C F # # G # #
+POSTORDER: # # B # # F # # G C A
+
+=== TEST test_08_unequal_heights ===
+STATUS: SUCCESS
+PREORDER: 1 2 4 8 # # 9 # # 5 # # 3 6 # # 7 # #
+POSTORDER: # # 8 # # 9 4 # # 5 2 # # 6 # # 7 3 1
+
+=== TEST test_09_empty_tree ===
+STATUS: SUCCESS
+PREORDER: #
+POSTORDER: #
+
+=== TEST test_10_mismatched_roots ===
+STATUS: ERROR
+
+=== TEST test_11_length_mismatch ===
+STATUS: ERROR
+
+=== TEST test_12_duplicate_values ===
+STATUS: ERROR
+
+=== TEST test_13_mismatched_elements ===
+STATUS: ERROR
+
+=== TEST test_14_inconsistent_traversal ===
+STATUS: ERROR
